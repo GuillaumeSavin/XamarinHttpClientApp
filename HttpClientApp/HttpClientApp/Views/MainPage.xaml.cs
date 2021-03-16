@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HttpClientApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,6 +14,15 @@ namespace HttpClientApp
         public MainPage()
         {
             InitializeComponent();
+            BindingContext = new MainViewModel();
+        }
+
+        void Entry_Completed(System.Object sender, System.EventArgs e)
+        {
+            if (BindingContext is MainViewModel vm)
+            {
+                vm.GetCommand.Execute(sender);
+            }
         }
     }
 }
