@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Newtonsoft.Json;
+using HttpClientApp.Models;
+using System.Linq;
 
 namespace HttpClientApp.ViewModels
 {
@@ -13,6 +16,12 @@ namespace HttpClientApp.ViewModels
     {
         string querry;
         string message;
+        string errormessage;
+        string city;
+        string windspeed;
+        string humidity;
+        string visibility;
+        string temperature;
         
         public string Querry
         {
@@ -39,6 +48,82 @@ namespace HttpClientApp.ViewModels
             }
         }
 
+        public string ErrorMessage
+        {
+            get
+            {
+                return errormessage;
+            }
+
+            set
+            {
+                SetProperty(ref errormessage, value);
+            }
+        }
+
+        public string City
+        {
+            get
+            {
+                return city;
+            }
+            set
+            {
+                SetProperty(ref city, value);
+            }
+        }
+
+        public string WindSpeed
+        {
+            get
+            {
+                return windspeed;
+            }
+
+            set
+            {
+                SetProperty(ref windspeed, value);
+            }
+        }
+
+        public string Humidity
+        {
+            get
+            {
+                return humidity;
+            }
+            set
+            {
+                SetProperty(ref humidity, value);
+            }
+        }
+
+        public string Visibility
+        {
+            get
+            {
+                return visibility;
+            }
+
+            set
+            {
+                SetProperty(ref visibility, value);
+            }
+        }
+
+        public string Temperature
+        {
+            get
+            {
+                return temperature;
+            }
+            set
+            {
+                SetProperty(ref temperature, value);
+            }
+        }
+
+
         public ICommand GetCommand => new Command(() =>
            Task.Run(LoadWeatherData)
         );
@@ -52,9 +137,28 @@ namespace HttpClientApp.ViewModels
 
             IsBusy = true;
             var client = HttpService.GetInstance();
-            var result = await client.GetAsync($"http://api.openweathermap.org/data/2.5/weather?q={Querry}&APPID=6fcb5a969e58b25ffb37b7426ac18d12&units = metric & lang = fr");
+            var result = await client.GetAsync($"https://api.openweathermap.org/data/2.5/weather?q={Querry}&APPID=6fcb5a969e58b25ffb37b7426ac18d12&units=metric&lang=fr");
+            var serializedResponse = await result.Content.ReadAsStringAsync();
+            var weatherResponse = JsonConvert.DeserializeObject<WeatherResponse>(serializedResponse);
 
-            Message = await result.Content.ReadAsStringAsync();
+            if(weatherResponse?.Weather != null && weatherResponse.Weather.Any())
+            {
+                ErrorMessage = "";
+                City = weatherResponse.Name;
+                WindSpeed = $"{weatherResponse.Wind.Speed} km/h";
+                Humidity = $"{weatherResponse.Main.Humidity}%";
+                Visibility = $"{weatherResponse.Visibility}m";
+                Temperature = $"{weatherResponse.Main.Temp}°";
+            }
+            else
+            {
+                ErrorMessage = weatherResponse?.Message ?? "Unknown Error";
+                City = "unknown";
+                WindSpeed = "unknown";
+                Humidity = "unknown";
+                Visibility = "unknown";
+                Temperature = "unknown";
+            }
 
             IsBusy = false;
         }

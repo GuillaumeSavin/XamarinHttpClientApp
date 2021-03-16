@@ -10,6 +10,13 @@
                 <Entry Text="{Binding Querry}" Completed="Entry_Completed" />
                 <Label Text="{Binding Message}" HorizontalTextAlignment="Center" />
                 <Button Text="Get Weather Data" Command="{Binding GetCommand}" IsEnabled="{Binding IsNotBusy}"/>
+                <BoxView BackgroundColor="Gray" HeightRequest="0.001" HorizontalOptions="FillAndExpand" Margin="16,10,16,10"/>
+                <Label Text="{Binding ErrorMessage}" TextColor="Red" FontAttributes="Bold" FontSize="Medium" HorizontalOptions="Center"/>
+                <Label Text="{Binding Location, StringFormat='Location: {0}'}" TextColor="DarkSlateGray" FontSize="Large" HorizontalOptions="Center"/>
+                <Label Text="{Binding Temperature, StringFormat='Temperature: {0}'}" TextColor="DarkSlateGray" FontSize="Large" HorizontalOptions="Center"/>
+                <Label Text="{Binding WindSpeed, StringFormat='Wind Speed: {0}'}" TextColor="DarkSlateGray" FontSize="Large" HorizontalOptions="Center"/>
+                <Label Text="{Binding Humidity, StringFormat='Humidity: {0}'}" TextColor="DarkSlateGray" FontSize="Large" HorizontalOptions="Center"/>
+                <Label Text="{Binding Visibility, StringFormat='Visibility: {0}'}" TextColor="DarkSlateGray" FontSize="Large" HorizontalOptions="Center"/>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>  
